@@ -1,0 +1,415 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tic Tac Toe Design System - Futuristic Gaming Theme */
+
+@layer base {
+  :root {
+    /* Core Background & Surface Colors */
+    --background: 210 100% 8%;
+    --foreground: 180 100% 95%;
+    --surface: 215 25% 12%;
+    --surface-elevated: 215 25% 16%;
+    
+    /* Neon Game Colors */
+    --player-x: 180 100% 50%;        /* Cyan for X */
+    --player-x-glow: 180 100% 60%;
+    --player-o: 330 100% 50%;        /* Magenta for O */
+    --player-o-glow: 330 100% 60%;
+    
+    /* UI Elements */
+    --accent: 240 100% 70%;
+    --accent-glow: 240 100% 80%;
+    --success: 120 100% 50%;
+    --warning: 45 100% 60%;
+    --border: 220 15% 25%;
+    --border-bright: 220 30% 40%;
+    
+    /* Text Colors */
+    --text-primary: 180 20% 95%;
+    --text-secondary: 180 10% 70%;
+    --text-muted: 180 5% 50%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--background)), hsl(var(--surface)));
+    --gradient-board: linear-gradient(145deg, hsl(var(--surface)), hsl(var(--surface-elevated)));
+    --gradient-glow: radial-gradient(circle, hsl(var(--accent-glow) / 0.3), transparent 70%);
+    
+    /* Effects */
+    --glow-x: 0 0 20px hsl(var(--player-x) / 0.6), 0 0 40px hsl(var(--player-x) / 0.3);
+    --glow-o: 0 0 20px hsl(var(--player-o) / 0.6), 0 0 40px hsl(var(--player-o) / 0.3);
+    --glow-win: 0 0 30px hsl(var(--success) / 0.8), 0 0 60px hsl(var(--success) / 0.4);
+    --shadow-elevated: 0 10px 25px hsl(var(--background) / 0.5), 0 20px 50px hsl(var(--background) / 0.3);
+    
+    /* Animation Timing */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-inter;
+    background: var(--gradient-primary);
+    color: hsl(var(--text-primary));
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  /* Game Board Styles */
+  .game-container {
+    @apply min-h-screen flex flex-col items-center justify-center p-4;
+    background: var(--gradient-primary);
+    position: relative;
+  }
+  
+  .game-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-glow);
+    opacity: 0.1;
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+  
+  .game-board {
+    @apply grid grid-cols-3 gap-2 p-6 rounded-2xl;
+    background: var(--gradient-board);
+    border: 2px solid hsl(var(--border));
+    box-shadow: var(--shadow-elevated);
+    backdrop-filter: blur(10px);
+    animation: board-appear 0.6s var(--transition-bounce);
+  }
+  
+  .game-square {
+    @apply w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl flex items-center justify-center text-4xl sm:text-5xl md:text-6xl font-bold cursor-pointer relative overflow-hidden;
+    background: hsl(var(--surface-elevated));
+    border: 2px solid hsl(var(--border));
+    transition: all var(--transition-smooth);
+    font-family: 'Orbitron', monospace;
+  }
+  
+  .game-square:hover:not(.occupied) {
+    background: hsl(var(--surface-elevated) / 0.8);
+    border-color: hsl(var(--border-bright));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--accent) / 0.2);
+  }
+  
+  .game-square.occupied {
+    cursor: not-allowed;
+  }
+  
+  .game-square.player-x {
+    color: hsl(var(--player-x));
+    text-shadow: var(--glow-x);
+    animation: mark-appear 0.3s var(--transition-bounce);
+  }
+  
+  .game-square.player-o {
+    color: hsl(var(--player-o));
+    text-shadow: var(--glow-o);
+    animation: mark-appear 0.3s var(--transition-bounce);
+  }
+  
+  .game-square.winning {
+    background: hsl(var(--success) / 0.2);
+    border-color: hsl(var(--success));
+    box-shadow: var(--glow-win);
+    animation: win-pulse 0.8s ease-in-out infinite;
+  }
+  
+  /* Game Info Styles */
+  .game-info {
+    @apply text-center mb-8;
+  }
+  
+  .game-title {
+    @apply text-4xl sm:text-5xl md:text-6xl font-black mb-4;
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(45deg, hsl(var(--player-x)), hsl(var(--player-o)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  .game-status {
+    @apply text-xl sm:text-2xl font-semibold mb-2;
+    color: hsl(var(--text-secondary));
+    transition: all var(--transition-smooth);
+  }
+  
+  .game-status.winner {
+    color: hsl(var(--success));
+    text-shadow: 0 0 10px hsl(var(--success) / 0.5);
+    animation: status-celebrate 0.6s ease-in-out;
+  }
+  
+  .game-status.draw {
+    color: hsl(var(--warning));
+    text-shadow: 0 0 10px hsl(var(--warning) / 0.5);
+  }
+  
+  .current-player {
+    @apply text-lg font-medium;
+    color: hsl(var(--text-muted));
+  }
+  
+  .current-player.player-x {
+    color: hsl(var(--player-x));
+  }
+  
+  .current-player.player-o {
+    color: hsl(var(--player-o));
+  }
+  
+  .current-player.thinking {
+    color: hsl(var(--player-o));
+    animation: thinking-pulse 1.5s ease-in-out infinite;
+  }
+  
+  /* Button Styles */
+  .game-button {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300 relative overflow-hidden;
+    background: hsl(var(--surface-elevated));
+    border: 2px solid hsl(var(--border));
+    color: hsl(var(--text-primary));
+  }
+  
+  .game-button:hover:not(:disabled) {
+    background: hsl(var(--accent) / 0.2);
+    border-color: hsl(var(--accent));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--accent) / 0.3);
+  }
+  
+  .game-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .game-button.primary {
+    background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-glow)));
+    border-color: hsl(var(--accent));
+    color: hsl(var(--background));
+  }
+  
+  .game-button.primary:hover:not(:disabled) {
+    box-shadow: 0 8px 25px hsl(var(--accent) / 0.4);
+    transform: translateY(-3px);
+  }
+  
+  /* Controls Layout */
+  .game-controls {
+    @apply flex flex-wrap gap-4 justify-center mt-8;
+  }
+  
+  /* Move History */
+  .move-history {
+    @apply mt-8 p-4 rounded-lg max-w-md;
+    background: hsl(var(--surface) / 0.5);
+    border: 1px solid hsl(var(--border));
+    backdrop-filter: blur(5px);
+  }
+  
+  .move-history h3 {
+    @apply text-lg font-semibold mb-3;
+    color: hsl(var(--text-secondary));
+  }
+  
+  .move-list {
+    @apply space-y-2 max-h-40 overflow-y-auto;
+  }
+  
+  .move-item {
+    @apply p-2 rounded text-sm cursor-pointer transition-all;
+    background: hsl(var(--surface-elevated) / 0.5);
+    color: hsl(var(--text-muted));
+  }
+  
+  .move-item:hover {
+    background: hsl(var(--accent) / 0.2);
+    color: hsl(var(--text-primary));
+  }
+  
+  .move-item.current {
+    background: hsl(var(--accent) / 0.3);
+    color: hsl(var(--text-primary));
+    font-weight: 600;
+  }
+  
+  /* Toast Notification */
+  .toast {
+    @apply fixed top-4 right-4 p-4 rounded-lg z-50;
+    background: hsl(var(--surface-elevated));
+    border: 1px solid hsl(var(--border-bright));
+    color: hsl(var(--text-primary));
+    box-shadow: var(--shadow-elevated);
+    animation: toast-slide-in 0.3s ease-out;
+  }
+  
+  .toast.error {
+    border-color: hsl(var(--warning));
+    background: hsl(var(--warning) / 0.1);
+  }
+}
+
+@layer utilities {
+  /* Animations */
+  @keyframes board-appear {
+    0% {
+      opacity: 0;
+      transform: scale(0.8) translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  @keyframes mark-appear {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes win-pulse {
+    0%, 100% {
+      box-shadow: var(--glow-win);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: var(--glow-win), 0 0 60px hsl(var(--success) / 0.6);
+      transform: scale(1.05);
+    }
+  }
+  
+  @keyframes title-glow {
+    0% {
+      filter: brightness(1) drop-shadow(0 0 10px hsl(var(--player-x) / 0.3));
+    }
+    100% {
+      filter: brightness(1.2) drop-shadow(0 0 20px hsl(var(--player-o) / 0.3));
+    }
+  }
+  
+  @keyframes status-celebrate {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 0.1;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+  
+  @keyframes toast-slide-in {
+    0% {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes thinking-pulse {
+    0%, 100% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+      text-shadow: 0 0 10px hsl(var(--player-o) / 0.5);
+    }
+  }
+}
