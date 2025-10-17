@@ -13,7 +13,10 @@ A **modern, engaging Tic Tac Toe** game featuring a **smart AI opponent**, built
 Challenge yourself against an **intelligent computer** with a futuristic design, glowing visuals, and smooth gameplay.
 
 ---
-![Game Screenshot](assets/demo_game.jpg)
+## 🚀 LIVE DEMO
+**[▶️ Play the Game Here](https://tic-tac-toe-player-vs-computer.vercel.app)**
+
+***
 
 ## 🚀 Features
 
